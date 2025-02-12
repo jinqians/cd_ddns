@@ -73,9 +73,31 @@ fi
 
 # Get current IP
 if [ "$ip_type" == "A" ]; then
-    ip=$(curl -s ip.sb -4)
+    ip=$(curl -s4 https://api.ipify.org)
+    if [ $? -eq 0 ] && [ ! -z "$ip" ]; then
+        echo -e "${GREEN}$ip${NC}"
+    else
+        # 备用IPv4获取方法
+        ip=$(curl -s4 https://ip.gs)
+        if [ $? -eq 0 ] && [ ! -z "$ip" ]; then
+            echo -e "${GREEN}$ip${NC}"
+        else
+            echo -e "${RED}无法获取IPv4地址${NC}"
+        fi
+    fi
 else
-    ip=$(curl -s ip.sb -6)
+    ip=$(curl -s6 https://api64.ipify.org)
+    if [ $? -eq 0 ] && [ ! -z "$ip" ]; then
+        echo -e "${GREEN}$ip${NC}"
+    else
+        # 备用IPv6获取方法
+        ip=$(curl -s6 https://ip.gs)
+        if [ $? -eq 0 ] && [ ! -z "$ip" ]; then
+            echo -e "${GREEN}$ip${NC}"
+        else
+            echo -e "${RED}无法获取IPv6地址或服务器不支持IPv6${NC}"
+        fi
+    fi
 fi
 
 # Define file paths
